@@ -2,53 +2,83 @@
 
 ### Computer Vision Automation Full-Stack Development
 
+---
+
 ## 1. Project Overview
 
-This is a professional full-stack application built to analyze traffic from aerial drone footage. The system identifies vehicles, tracks them with unique IDs, and implements custom logic to ensure accurate counting across variable resolutions and edge cases.
+This is a professional full-stack solution designed to process drone-captured video for traffic management. The system automates vehicle detection, persistent tracking, and data reporting, allowing users to upload `.mp4` files and receive comprehensive traffic analytics.
 
 ## 2. Technical Architecture
 
-[cite_start]In compliance with the assessment requirements, this project uses a **decoupled Full-Stack architecture**:
+In compliance with the **ANTS** assessment requirements, the project utilizes a **decoupled Full-Stack architecture**:
 
-- **Frontend:** Built with **Next.js** (React) to handle the UI. [cite_start]It includes explicit **loading states and progress indicators** [cite: 23] to maintain a responsive UX during the heavy background processing of video files.
-- [cite_start]**Backend:** Powered by **FastAPI** (Python) to manage the computer vision pipeline and data extraction[cite: 24].
-- [cite_start]**Communication:** File uploads and detection data are handled via **REST APIs**[cite: 25].
+- **Frontend (Next.js):** A modern React-based interface featuring a "corporate premium" aesthetic. It manages the user workflow, including file uploads and real-time **loading/processing states** to ensure a responsive User Experience (UX).
+- **Backend (FastAPI):** A high-performance Python backend that handles the Computer Vision (CV) pipeline. It utilizes background tasks to process video without blocking the API.
+- **Communication:** Data and video files are exchanged via **RESTful APIs**. The backend provides structured JSON responses for tracking data, which are then rendered on the frontend.
 
-## 3. Unique Adaptive Pipeline & Logic
+---
 
-[cite_start]To solve the **Core Challenge** of preventing double-counting and handling occlusions, I developed an **Adaptive Detection Pipeline**:
+## 3. Unique Adaptive Detection Pipeline
 
-- **Resolution-Agnostic Gate:** Instead of fixed pixel coordinates, the "Detection Gate" is set at a relative **65% of the frame height**. This ensures the logic scales perfectly whether the input is 720p, 1080p, or 4K.
-- **Dynamic Catchment Buffer:** The system calculates a "trigger zone" (3%–5% of frame height) that scales with the video resolution. This prevents high-speed vehicles from "skipping" the detection line between frames.
-- **ID State Persistence:** Once a vehicle crosses the gate, its unique ID is stored in a session-specific "Counted" set. [cite_start]The system cross-references this set to prevent re-counting vehicles that stop, slow down, or are temporarily hidden by obstacles like lampposts.
+The core of this solution is a custom **Adaptive Pipeline** designed specifically to solve the challenge of double-counting and varying video resolutions:
 
-## 4. Automation and Reporting
+- **Resolution-Agnostic Gate:** Instead of static pixel coordinates, the "Detection Gate" is dynamically set at **65% of the frame height**. This allows the counting logic to remain consistent regardless of whether the input is 720p, 1080p, or 4K.
+- **Dynamic Catchment Buffer:** The system establishes a trigger zone (scaling between **3% to 5%** of height) based on the video's resolution. This ensures that fast-moving vehicles are captured even if their movement between frames "jumps" across a single line.
+- **ID State Persistence:** I utilized a persistent tracking algorithm (YOLOv8 + ByteTrack logic). Once a unique vehicle ID is logged as "Counted," it is stored in a session set. This prevents re-counting if a vehicle stops, slows down, or is temporarily occluded by obstacles.
 
-[cite_start]The application automatically generates a structured **CSV/Excel report** [cite: 15, 37] containing:
+---
 
-- [cite_start]**Total unique vehicle count**[cite: 38].
-- [cite_start]**Breakdown by vehicle type** (Car, Bus, Truck, etc.)[cite: 39].
-- [cite_start]**Processing Duration:** The total time taken to analyze the file[cite: 40].
-- [cite_start]**Frame and timestamp data** for every detection event[cite: 41].
+## 4. Automation & Reporting
 
-## [cite_start]5. Engineering Assumptions [cite: 57, 67]
+Upon completion, the system generates a downloadable **CSV/Excel report** containing:
 
-- [cite_start]The footage is from a top-down or high-angle drone perspective[cite: 5].
+- **Total Unique Vehicle Count** categorized by class (Car, Truck, Bus, etc.).
+- **Processing Duration:** Total time taken by the pipeline to analyze the footage.
+- **Temporal Analytics:** Exact frame indices and timestamps for every detection event.
+
+## 5. Engineering Assumptions
+
+- The drone footage provides a top-down or high-angle perspective.
 - Vehicles are counted upon crossing the 65% height threshold.
-- The system utilizes GPU acceleration (CUDA) if available, falling back to CPU if necessary.
+- The system prioritizes GPU acceleration (CUDA) but includes an automated fallback to CPU.
 
-## [cite_start]6. Local Setup & Installation [cite: 64]
+---
 
-### Backend
+## 6. Local Setup & Installation
 
-1. `cd backend`
-2. `python -m venv venv`
-3. `source venv/bin/activate` (Windows: `.\venv\Scripts\activate`)
-4. `pip install -r requirements.txt`
-5. `uvicorn app.main:app --reload`
+### Backend Setup
 
-### Frontend
+1.  Navigate to the backend directory:
+    ```bash
+    cd backend
+    ```
+2.  Create and activate a virtual environment:
+    - **Windows:** `python -m venv venv` then `.\venv\Scripts\activate`
+    - **Mac/Linux:** `python3 -m venv venv` then `source venv/bin/activate`
+3.  Install dependencies:
+    ```bash
+    pip install -r requirements.txt
+    ```
+4.  Run the server:
+    ```bash
+    uvicorn main:app --reload
+    ```
 
-1. `cd frontend`
-2. `npm install`
-3. `npm run dev`
+### Frontend Setup
+
+1.  Navigate to the frontend directory:
+    ```bash
+    cd frontend
+    ```
+2.  Install dependencies:
+    ```bash
+    npm install
+    ```
+3.  Run the development server:
+    ```bash
+    npm run dev
+    ```
+
+---
+
+**Developed by Nahian Alam**
